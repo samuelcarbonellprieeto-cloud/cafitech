@@ -155,7 +155,85 @@ document.addEventListener('keydown',function(e){if(e.key==='Escape'){m(false);b.
     top(true)});
 })();
 </script>
+<!-- BANNER DE COOKIES CAFITECH -->
+<div id="cafitech-cookie-banner" role="dialog" aria-label="Aviso de cookies" style="display:none; position:fixed; bottom:16px; left:16px; right:16px; max-width:680px; margin:0 auto; background:#111214; color:#f4f6f8; border:1px solid #2a2e35; border-radius:10px; padding:16px 20px; box-shadow:0 10px 30px rgba(0,0,0,0.45); z-index:99999; font-family:system-ui,-apple-system,sans-serif; font-size:14px; line-height:1.5;">
+  <div style="margin-bottom:12px;">
+    <strong style="color:#ffffff; font-size:15px;">Uso de cookies</strong>
+    <p style="margin:6px 0 0; color:#c7cdd4;">
+      Utilizamos cookies técnicas necesarias para que la web funcione y, solo si lo autorizas, cookies de medición o terceros. Puedes aceptar, rechazar o consultar más información en nuestra
+      <a href="/cookies.html" style="color:#0088FF; text-decoration:underline;">Política de Cookies</a>.
+    </p>
+  </div>
+  <div style="display:flex; flex-wrap:wrap; gap:10px; justify-content:flex-end;">
+    <button type="button" id="btn-reject-cookies" style="background:transparent; color:#e5e9ef; border:1px solid #4b525c; border-radius:6px; padding:8px 14px; font-size:13px; font-weight:600; cursor:pointer;">
+      Rechazar no esenciales
+    </button>
+    <button type="button" id="btn-accept-cookies" style="background:#0088FF; color:#ffffff; border:none; border-radius:6px; padding:8px 16px; font-size:13px; font-weight:600; cursor:pointer;">
+      Aceptar cookies
+    </button>
+  </div>
+</div>
 
+<script>
+(function () {
+  const STORAGE_KEY = "cafitech_cookie_consent_v1";
+  const banner = document.getElementById("cafitech-cookie-banner");
+  const btnAccept = document.getElementById("btn-accept-cookies");
+  const btnReject = document.getElementById("btn-reject-cookies");
+
+  function enableOptionalScripts() {
+    document.querySelectorAll('script[type="text/plain"][data-cookie-consent="analytics"]').forEach(function (el) {
+      if (el.dataset.loaded) return;
+      const s = document.createElement("script");
+      if (el.dataset.src) {
+        s.src = el.dataset.src;
+        s.async = true;
+      } else {
+        s.textContent = el.textContent;
+      }
+      el.dataset.loaded = "true";
+      el.parentNode.insertBefore(s, el.nextSibling);
+    });
+  }
+
+  function setConsent(value) {
+    try {
+      localStorage.setItem(STORAGE_KEY, value);
+    } catch (e) {}
+    if (banner) banner.style.display = "none";
+    if (value === "accepted") {
+      enableOptionalScripts();
+    }
+  }
+
+  let saved = null;
+  try {
+    saved = localStorage.getItem(STORAGE_KEY);
+  } catch (e) {}
+
+  if (saved === "accepted") {
+    enableOptionalScripts();
+  } else if (saved !== "rejected") {
+    if (banner) banner.style.display = "block";
+  }
+
+  if (btnAccept) {
+    btnAccept.addEventListener("click", function () {
+      setConsent("accepted");
+    });
+  }
+
+  if (btnReject) {
+    btnReject.addEventListener("click", function () {
+      setConsent("rejected");
+    });
+  }
+
+  window.abrirConfigCookies = function () {
+    if (banner) banner.style.display = "block";
+  };
+})();
+</script>
 
 
 </body></html>
